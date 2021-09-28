@@ -1,4 +1,4 @@
-const Product = (props) => {
+const EditableProduct = (props) => {
   return(
     <div className="product">
       <div className="product-details">
@@ -15,4 +15,4 @@ const Product = (props) => {
   );
 };
 
-export default Product;
+export default EditableProduct;
