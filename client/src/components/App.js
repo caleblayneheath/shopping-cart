@@ -33,15 +33,41 @@ const test = [
 ];
 
 const App = () => {
-  const [products, setProducts] = useState(test)
+  const [products, setProducts] = useState([])
   const [cart, setCart] = useState([])
+
+  const handleSubmit = async (newProduct, callback) => {
+    try {
+      const response = await axios.post('http://localhost:5000/api/products', newProduct)
+      const data = response.data
+      setProducts([...products, data])
+      if (callback) {
+        callback()
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  useEffect(() => {
+    const getProducts = async () => {
+      const response = await axios.get('http://localhost:5000/api/products');
+      const data = response.data
+      if (data.length > 0) {
+        setProducts(data)
+      } else {
+        console.log('No products on the server')
+      }
+    }
+    getProducts()
+  }, [])
 
   return (
     <div id="app">
       <Header cart={cart}/>
       <main>
         <ProductListings products={products}/>
-        <ProductAddForm />
+        <ProductAddForm onSubmit={handleSubmit}/>
       </main>
     </div>
   );
