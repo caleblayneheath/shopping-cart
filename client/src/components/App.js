@@ -49,6 +49,19 @@ const App = () => {
     }
   }
 
+  const handleDelete = async (id, callback) => {
+    try {
+      const response = await axios.delete(`http://localhost:5000/api/products/${id}`)
+      console.log(response);
+      setProducts(products.filter(({_id}) => _id !== id))
+      if (callback) {
+        callback()
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   useEffect(() => {
     const getProducts = async () => {
       const response = await axios.get('http://localhost:5000/api/products');
@@ -66,7 +79,7 @@ const App = () => {
     <div id="app">
       <Header cart={cart}/>
       <main>
-        <ProductListings products={products}/>
+        <ProductListings products={products} onDelete={handleDelete}/>
         <ProductAddForm onSubmit={handleSubmit}/>
       </main>
     </div>

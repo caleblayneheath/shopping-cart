@@ -4,6 +4,7 @@ const ProductAddForm = ({ onSubmit }) => {
   const [ title, setTitle ] = useState('')
   const [ price, setPrice ] = useState('')
   const [ quantity, setQuantity ] = useState('')
+  const [ addFormVisible, setAddFormVisible ] = useState('')
 
   const resetInputs = () => {
     setTitle('')
@@ -14,12 +15,21 @@ const ProductAddForm = ({ onSubmit }) => {
   const handleSubmit = event => {
     console.log('form submitted')
     event.preventDefault();
-    onSubmit({ title, price, quantity }, resetInputs)
+    onSubmit({ title, price, quantity }, hideForm)
+  }
+
+  const showForm = event => {
+    setAddFormVisible('visible')
+  }
+
+  const hideForm = event => {
+    setAddFormVisible('')
+    resetInputs()
   }
 
   return(
-    <div className="add-form visible">
-      <p><a className="button add-product-button">Add A Product</a></p>
+    <div className={`add-form ${addFormVisible}`}>
+      <p><a className="button add-product-button" onClick={showForm}>Add A Product</a></p>
       <h3>Add Product</h3>
       <form >
         <div className="input-group">
@@ -39,7 +49,7 @@ const ProductAddForm = ({ onSubmit }) => {
 
         <div className="actions form-actions">
           <a className="button" onClick={handleSubmit}>Add</a>
-          <a className="button" onClick={resetInputs}>Cancel</a>
+          <a className="button" onClick={hideForm}>Cancel</a>
         </div>
       </form>
     </div>

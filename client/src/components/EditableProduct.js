@@ -1,4 +1,10 @@
 const EditableProduct = (props) => {
+  const handleDelete = event => {
+    console.log('delete button pressed');
+    event.preventDefault();
+    props.onDelete(props.id)
+  }
+
   return(
     <div className="product">
       <div className="product-details">
@@ -9,7 +15,7 @@ const EditableProduct = (props) => {
           <a className="button add-to-cart">Add to Cart</a>
           <a className="button edit">Edit</a>
         </div>
-        <a className="delete-button"><span>X</span></a>
+        <a className="delete-button" onClick={handleDelete}><span>X</span></a>
       </div>
     </div> 
   );
