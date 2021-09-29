@@ -1,6 +1,6 @@
 import EditableProduct from "./EditableProduct";
 
-const ProductListings = ({products, onDelete}) => {
+const ProductListings = ({products, onDelete, onEdit}) => {
   
   return(
      <div className="product-listing">
@@ -13,6 +13,7 @@ const ProductListings = ({products, onDelete}) => {
             quantity={product.quantity}
             price={product.price}
             onDelete={onDelete}
+            onEdit={onEdit}
           />
         })}
     </div>

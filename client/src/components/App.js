@@ -5,32 +5,32 @@ import Header from './Header';
 import ProductAddForm from "./ProductAddForm";
 import ProductListings from "./ProductListings";
 
-const test = [
-  {
-    id: 1,
-    title: 'Amazon Kindle E-reader',
-    quantity: 5,
-    price: 79.99
-  },
-  {
-    id: 2,
-    title: 'Apple 10.5-Inch iPad Pro',
-    quantity: 3,
-    price: 649.99
-  },
-  {
-    id: 3,
-    title: 'Yamaha Portable Keyboard',
-    quantity: 2,
-    price: 155.99
-  },
-  {
-    id: 4,
-    title: 'Tinker, Tailor, Soldier, Spy - A John le Carre Novel',
-    quantity: 12,
-    price: 13.74
-  }
-];
+// const test = [
+//   {
+//     id: 1,
+//     title: 'Amazon Kindle E-reader',
+//     quantity: 5,
+//     price: 79.99
+//   },
+//   {
+//     id: 2,
+//     title: 'Apple 10.5-Inch iPad Pro',
+//     quantity: 3,
+//     price: 649.99
+//   },
+//   {
+//     id: 3,
+//     title: 'Yamaha Portable Keyboard',
+//     quantity: 2,
+//     price: 155.99
+//   },
+//   {
+//     id: 4,
+//     title: 'Tinker, Tailor, Soldier, Spy - A John le Carre Novel',
+//     quantity: 12,
+//     price: 13.74
+//   }
+// ];
 
 const App = () => {
   const [products, setProducts] = useState([])
@@ -62,6 +62,25 @@ const App = () => {
     }
   }
 
+  const handleEdit = async (id, updateObj, callback) => {
+    try {
+      const response = await axios.put(`http://localhost:5000/api/products/${id}`, updateObj)
+      console.log(response.data);
+      setProducts(products.map(product => {
+        if (product._id === id) {
+          return response.data;
+        } else {
+          return product;
+        }
+      }))
+      if (callback) {
+        callback()
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   useEffect(() => {
     const getProducts = async () => {
       const response = await axios.get('http://localhost:5000/api/products');
@@ -79,7 +98,7 @@ const App = () => {
     <div id="app">
       <Header cart={cart}/>
       <main>
-        <ProductListings products={products} onDelete={handleDelete}/>
+        <ProductListings products={products} onDelete={handleDelete} onEdit={handleEdit}/>
         <ProductAddForm onSubmit={handleSubmit}/>
       </main>
     </div>
