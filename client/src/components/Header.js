@@ -23,7 +23,7 @@ const Header = (props) => {
           )
           : (
             <>
-              <table class="cart-items">
+              <table className="cart-items">
                 <tr>
                   <th>Item</th>
                   <th>Quantity</th>
@@ -31,7 +31,7 @@ const Header = (props) => {
                 </tr>
                 {props.cart.map(cartItem => {
                   return (
-                    <tr>
+                    <tr key={cartItem._id}>
                     <td>{cartItem.title}</td>
                     <td>{cartItem.quantity}</td>
                     <td>${cartItem.price}</td>
@@ -41,10 +41,10 @@ const Header = (props) => {
                 
 
                 <tr>
-                  <td colspan="3" class="total">Total: ${getTotalPrice()}</td>
+                  <td colspan="3" className="total">Total: ${getTotalPrice()}</td>
                 </tr>
               </table>
-              <a class="button checkout">Checkout</a>
+              <a className="button checkout">Checkout</a>
             </>  
           )
         }
