@@ -36,6 +36,32 @@ const App = () => {
   const [products, setProducts] = useState([])
   const [cart, setCart] = useState([])
 
+  useEffect(() => {
+    const getProducts = async () => {
+      const response = await axios.get('http://localhost:5000/api/products');
+      const data = response.data
+      if (data.length > 0) {
+        setProducts(data)
+      } else {
+        console.log('No products on the server')
+      }
+    }
+    getProducts()
+  }, [])
+
+  useEffect(() => {
+    const getCart = async () => {
+      const response = await axios.get('http://localhost:5000/api/cart');
+      const data = response.data
+      if (data.length > 0) {
+        setCart(data)
+      } else {
+        console.log('No products on the server')
+      }
+    }
+    getCart()
+  }, [])
+
   const handleSubmit = async (newProduct, callback) => {
     try {
       const response = await axios.post('http://localhost:5000/api/products', newProduct)
@@ -81,24 +107,32 @@ const App = () => {
     }
   }
 
-  useEffect(() => {
-    const getProducts = async () => {
-      const response = await axios.get('http://localhost:5000/api/products');
-      const data = response.data
-      if (data.length > 0) {
-        setProducts(data)
+  const handleAddToCart = async (product, callback) => {
+    try {
+      const response = await axios.post(`http://localhost:5000/api/cart`, product)
+      const data =  response.data
+      const oldCartItem = cart.find(item => item._id === data._id)
+
+      if (oldCartItem) {
+        const newCartItem = {...oldCartItem, quantity: data.quantity}
+        setCart(cart.map(cartItem => cartItem._id === newCartItem._id ? newCartItem : cartItem))
       } else {
-        console.log('No products on the server')
+        setCart([...cart, data])
       }
+      
+      if (callback) {
+        callback()
+      }
+    } catch (e) {
+      console.error(e)
     }
-    getProducts()
-  }, [])
+  }
 
   return (
     <div id="app">
       <Header cart={cart}/>
       <main>
-        <ProductListings products={products} onDelete={handleDelete} onEdit={handleEdit}/>
+        <ProductListings products={products} onDelete={handleDelete} onEdit={handleEdit} onAddToCart={handleAddToCart}/>
         <ProductAddForm onSubmit={handleSubmit}/>
       </main>
     </div>

@@ -20,6 +20,16 @@ const EditableProduct = (props) => {
     setEditFormVisible(false);
   }
 
+  const handleAddToCart = e => {
+    e.preventDefault()
+    const product = {
+      title: props.title,
+      price: props.price,
+      productId: props.id
+    }
+    props.onAddToCart(product)
+  }
+
   return(
     <div className="product">
       <div className="product-details">
@@ -28,7 +38,7 @@ const EditableProduct = (props) => {
         <p className="quantity">{props.quantity} left in stock</p>
         { !editFormVisible &&        
           <div className="actions product-actions">
-            <a className="button add-to-cart">Add to Cart</a>
+            <a className="button add-to-cart" onClick={handleAddToCart}>Add to Cart</a>
             <a className="button edit" onClick={showEditForm}>Edit</a>
           </div>        
         }
