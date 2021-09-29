@@ -2,7 +2,9 @@
 
 const Header = (props) => {
   const getTotalPrice = () => {
-    return 100
+    return props.cart.reduce((total, cartItem) => {
+      return total + (cartItem.price * cartItem.quantity)
+    }, 0)
   }
 
   return (
