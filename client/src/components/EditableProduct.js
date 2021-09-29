@@ -27,7 +27,7 @@ const EditableProduct = (props) => {
       price: props.price,
       productId: props.id
     }
-    props.onAddToCart(product)
+    props.onAddToCart(product, props.quantity)
   }
 
   return(

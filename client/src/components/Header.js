@@ -44,7 +44,7 @@ const Header = (props) => {
                   <td colspan="3" className="total">Total: ${getTotalPrice()}</td>
                 </tr>
               </table>
-              <a className="button checkout">Checkout</a>
+              <a className="button checkout" onClick={props.onCheckout}>Checkout</a>
             </>  
           )
         }

@@ -107,8 +107,26 @@ const App = () => {
     }
   }
 
-  const handleAddToCart = async (product, callback) => {
+  const decrementQuantity = async ({productId}) => {
     try {
+      const product = products.find(product => product._id === productId)
+      console.log(product);
+      let quantity = product.quantity
+      const updateObj = { ...product, quantity: quantity - 1 }
+      await handleEdit(productId, updateObj)
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  const handleAddToCart = async (product, quantity, callback) => {
+    try {
+      if (quantity <= 0) {
+        return
+      }
+      
+      await decrementQuantity(product);
+
       const response = await axios.post(`http://localhost:5000/api/cart`, product)
       const data =  response.data
       const oldCartItem = cart.find(item => item._id === data._id)
@@ -128,9 +146,19 @@ const App = () => {
     }
   }
 
+  const handleCheckout = async () => {
+    try {
+      const response = await axios.post(`http://localhost:5000/api/cart/checkout`)
+      console.log(response);
+      setCart([])
+    } catch (e) {
+
+    }
+  }
+
   return (
     <div id="app">
-      <Header cart={cart}/>
+      <Header cart={cart} onCheckout={handleCheckout}/>
       <main>
         <ProductListings products={products} onDelete={handleDelete} onEdit={handleEdit} onAddToCart={handleAddToCart}/>
         <ProductAddForm onSubmit={handleSubmit}/>
