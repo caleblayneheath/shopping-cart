@@ -1,13 +1,88 @@
+import axios from 'axios'
 import { useState } from "react";
+import { useDispatch } from 'react-redux'
 import ProductEditForm from "./ProductEditForm";
 
+// const handleDelete = async (id, callback) => {
+//   try {
+//     const response = await axios.delete(`http://localhost:5000/api/products/${id}`)
+//     console.log(response);
+//     setProducts(products.filter(({_id}) => _id !== id))
+//     if (callback) {
+//       callback()
+//     }
+//   } catch (e) {
+//     console.log(e);
+//   }
+// }
+
+
+// const handleEdit = async (id, updateObj, callback) => {
+//   try {
+//     const response = await axios.put(`http://localhost:5000/api/products/${id}`, updateObj)
+//     console.log(response.data);
+//     setProducts(products.map(product => {
+//       if (product._id === id) {
+//         return response.data;
+//       } else {
+//         return product;
+//       }
+//     }))
+//     if (callback) {
+//       callback()
+//     }
+//   } catch (e) {
+//     console.log(e);
+//   }
+// }
+// const handleAddToCart = async (product, quantity, callback) => {
+//   try {
+//     if (quantity <= 0) {
+//       return
+//     }
+    
+//     await decrementQuantity(product);
+
+//     const response = await axios.post(`http://localhost:5000/api/cart`, product)
+//     const data =  response.data
+//     const oldCartItem = cart.find(item => item._id === data._id)
+
+//     if (oldCartItem) {
+//       const newCartItem = {...oldCartItem, quantity: data.quantity}
+//       setCart(cart.map(cartItem => cartItem._id === newCartItem._id ? newCartItem : cartItem))
+//     } else {
+//       setCart([...cart, data])
+//     }
+    
+//     if (callback) {
+//       callback()
+//     }
+//   } catch (e) {
+//     console.error(e)
+//   }
+// }
+
 const EditableProduct = (props) => {
+  const dispatch = useDispatch()
   const [editFormVisible, setEditFormVisible] = useState(false)
 
-  const handleDelete = event => {
+  const handleDelete = async (event, callback) => {
     console.log('delete button pressed');
     event.preventDefault();
-    props.onDelete(props.id)
+    try {
+      const response = await axios.delete(`http://localhost:5000/api/products/${props.id}`)
+      console.log(response);
+      dispatch({
+        type: 'PRODUCT_DELETED',
+        data: props.id
+      })
+      // setProducts(products.filter(({_id}) => _id !== id))
+      if (callback) {
+        callback()
+      }
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   const showEditForm = () => {
@@ -51,7 +126,6 @@ const EditableProduct = (props) => {
           title={props.title}
           quantity={props.quantity}
           price={props.price}
-          onEdit={props.onEdit}
         /> 
       }
     </div> 

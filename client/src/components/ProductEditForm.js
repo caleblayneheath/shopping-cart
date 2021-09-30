@@ -1,6 +1,9 @@
+import axios from 'axios'
+import { useDispatch } from 'react-redux'
 import { useState } from "react";
 
 const ProductEditForm = props => {
+  const dispatch = useDispatch()
   // hide the edit form, show add to cart,etc button
   // clear the form?
 
@@ -11,8 +14,31 @@ const ProductEditForm = props => {
   const handleUpdate = event => {
     console.log(`updating product ${title}`);
     event.preventDefault();
-    props.onEdit(props.id, {title, price, quantity}, props.hideEditForm);
+    onEdit(props.id, {title, price, quantity}, props.hideEditForm);
   };
+
+  const onEdit = async (id, updateObj, callback) => {
+    try {
+      const response = await axios.put(`http://localhost:5000/api/products/${id}`, updateObj)
+      console.log(response.data);
+      // setProducts(products.map(product => {
+      //   if (product._id === id) {
+      //     return response.data;
+      //   } else {
+      //     return product;
+      //   }
+      // }))
+      dispatch({
+        type: 'PRODUCT_UPDATED',
+        data: response.data
+      })
+      if (callback) {
+        callback()
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   const handleCancel = event => {
     event.preventDefault();

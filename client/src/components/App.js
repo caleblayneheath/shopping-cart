@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, {useState, useEffect} from "react";
+import { useDispatch } from 'react-redux'
 
 import Header from './Header';
 import ProductAddForm from "./ProductAddForm";
@@ -35,13 +36,18 @@ import ProductListings from "./ProductListings";
 const App = () => {
   const [products, setProducts] = useState([])
   const [cart, setCart] = useState([])
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const getProducts = async () => {
       const response = await axios.get('http://localhost:5000/api/products');
       const data = response.data
       if (data.length > 0) {
-        setProducts(data)
+        // setProducts(data)
+        dispatch({
+          type: 'PRODUCTS_RECEIVED',
+          data: data
+        })
       } else {
         console.log('No products on the server')
       }
@@ -54,7 +60,11 @@ const App = () => {
       const response = await axios.get('http://localhost:5000/api/cart');
       const data = response.data
       if (data.length > 0) {
-        setCart(data)
+        // setCart(data)
+        dispatch({
+          type: 'CART_RECEIVED',
+          data: data
+        })
       } else {
         console.log('No products on the server')
       }
@@ -160,11 +170,12 @@ const App = () => {
     <div id="app">
       <Header cart={cart} onCheckout={handleCheckout}/>
       <main>
-        <ProductListings products={products} onDelete={handleDelete} onEdit={handleEdit} onAddToCart={handleAddToCart}/>
-        <ProductAddForm onSubmit={handleSubmit}/>
+        <ProductListings onDelete={handleDelete} onEdit={handleEdit} onAddToCart={handleAddToCart}/>
+        <ProductAddForm />
       </main>
     </div>
   );
 };
 
 export default App;
+

@@ -1,7 +1,9 @@
+import { useSelector } from 'react-redux'
 import EditableProduct from "./EditableProduct";
 
-const ProductListings = ({products, onDelete, onEdit, onAddToCart}) => {
-  
+const ProductListings = ({ onDelete, onEdit, onAddToCart}) => {
+  const products = useSelector(store => store.products)
+
   return(
      <div className="product-listing">
         <h2>Products</h2>
@@ -12,9 +14,9 @@ const ProductListings = ({products, onDelete, onEdit, onAddToCart}) => {
             title={product.title}
             quantity={product.quantity}
             price={product.price}
-            onDelete={onDelete}
-            onEdit={onEdit}
-            onAddToCart={onAddToCart}
+            // onDelete={onDelete}
+            // onEdit={onEdit}
+            // onAddToCart={onAddToCart}
           />
         })}
     </div>
@@ -22,3 +24,4 @@ const ProductListings = ({products, onDelete, onEdit, onAddToCart}) => {
 };
 
 export default ProductListings;
+
