@@ -4,8 +4,6 @@ import { useState } from "react";
 
 const ProductEditForm = props => {
   const dispatch = useDispatch()
-  // hide the edit form, show add to cart,etc button
-  // clear the form?
 
   const [ title, setTitle ] = useState(props.title)
   const [ price, setPrice ] = useState(props.price)
@@ -21,13 +19,6 @@ const ProductEditForm = props => {
     try {
       const response = await axios.put(`http://localhost:5000/api/products/${id}`, updateObj)
       console.log(response.data);
-      // setProducts(products.map(product => {
-      //   if (product._id === id) {
-      //     return response.data;
-      //   } else {
-      //     return product;
-      //   }
-      // }))
       dispatch({
         type: 'PRODUCT_UPDATED',
         data: response.data

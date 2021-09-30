@@ -14,9 +14,6 @@ const ProductListings = ({ onDelete, onEdit, onAddToCart}) => {
             title={product.title}
             quantity={product.quantity}
             price={product.price}
-            // onDelete={onDelete}
-            // onEdit={onEdit}
-            // onAddToCart={onAddToCart}
           />
         })}
     </div>

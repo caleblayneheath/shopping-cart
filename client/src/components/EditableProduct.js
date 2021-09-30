@@ -1,66 +1,7 @@
 import axios from 'axios'
 import { useState } from "react";
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import ProductEditForm from "./ProductEditForm";
-
-// const handleDelete = async (id, callback) => {
-//   try {
-//     const response = await axios.delete(`http://localhost:5000/api/products/${id}`)
-//     console.log(response);
-//     setProducts(products.filter(({_id}) => _id !== id))
-//     if (callback) {
-//       callback()
-//     }
-//   } catch (e) {
-//     console.log(e);
-//   }
-// }
-
-
-// const handleEdit = async (id, updateObj, callback) => {
-//   try {
-//     const response = await axios.put(`http://localhost:5000/api/products/${id}`, updateObj)
-//     console.log(response.data);
-//     setProducts(products.map(product => {
-//       if (product._id === id) {
-//         return response.data;
-//       } else {
-//         return product;
-//       }
-//     }))
-//     if (callback) {
-//       callback()
-//     }
-//   } catch (e) {
-//     console.log(e);
-//   }
-// }
-// const handleAddToCart = async (product, quantity, callback) => {
-//   try {
-//     if (quantity <= 0) {
-//       return
-//     }
-    
-//     await decrementQuantity(product);
-
-//     const response = await axios.post(`http://localhost:5000/api/cart`, product)
-//     const data =  response.data
-//     const oldCartItem = cart.find(item => item._id === data._id)
-
-//     if (oldCartItem) {
-//       const newCartItem = {...oldCartItem, quantity: data.quantity}
-//       setCart(cart.map(cartItem => cartItem._id === newCartItem._id ? newCartItem : cartItem))
-//     } else {
-//       setCart([...cart, data])
-//     }
-    
-//     if (callback) {
-//       callback()
-//     }
-//   } catch (e) {
-//     console.error(e)
-//   }
-// }
 
 const EditableProduct = (props) => {
   const dispatch = useDispatch()
@@ -76,7 +17,6 @@ const EditableProduct = (props) => {
         type: 'PRODUCT_DELETED',
         data: props.id
       })
-      // setProducts(products.filter(({_id}) => _id !== id))
       if (callback) {
         callback()
       }
@@ -95,6 +35,56 @@ const EditableProduct = (props) => {
     setEditFormVisible(false);
   }
 
+  const decrementQuantity = async (product) => {
+    try {
+      let quantity = props.quantity
+      const updateObj = { ...product, quantity: quantity - 1 }
+      await onEdit(props.id, updateObj)
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  const onEdit = async (id, updateObj, callback) => {
+    try {
+      const response = await axios.put(`http://localhost:5000/api/products/${id}`, updateObj)
+      console.log(response.data);
+      dispatch({
+        type: 'PRODUCT_UPDATED',
+        data: response.data
+      })
+      if (callback) {
+        callback()
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  const onAddToCart = async (product, quantity, callback) => {
+    try {
+      if (quantity <= 0) {
+        return
+      }
+      
+      await decrementQuantity(product);
+
+      const response = await axios.post(`http://localhost:5000/api/cart`, product)
+      const data =  response.data
+
+      dispatch({
+        type: 'CART_UPDATED',
+        data: data,
+      })
+
+      if (callback) {
+        callback()
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
   const handleAddToCart = e => {
     e.preventDefault()
     const product = {
@@ -102,7 +92,7 @@ const EditableProduct = (props) => {
       price: props.price,
       productId: props.id
     }
-    props.onAddToCart(product, props.quantity)
+    onAddToCart(product, props.quantity)
   }
 
   return(

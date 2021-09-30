@@ -34,8 +34,6 @@ import ProductListings from "./ProductListings";
 // ];
 
 const App = () => {
-  const [products, setProducts] = useState([])
-  const [cart, setCart] = useState([])
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -43,7 +41,6 @@ const App = () => {
       const response = await axios.get('http://localhost:5000/api/products');
       const data = response.data
       if (data.length > 0) {
-        // setProducts(data)
         dispatch({
           type: 'PRODUCTS_RECEIVED',
           data: data
@@ -60,7 +57,6 @@ const App = () => {
       const response = await axios.get('http://localhost:5000/api/cart');
       const data = response.data
       if (data.length > 0) {
-        // setCart(data)
         dispatch({
           type: 'CART_RECEIVED',
           data: data
@@ -72,105 +68,11 @@ const App = () => {
     getCart()
   }, [])
 
-  const handleSubmit = async (newProduct, callback) => {
-    try {
-      const response = await axios.post('http://localhost:5000/api/products', newProduct)
-      const data = response.data
-      setProducts([...products, data])
-      if (callback) {
-        callback()
-      }
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
-  const handleDelete = async (id, callback) => {
-    try {
-      const response = await axios.delete(`http://localhost:5000/api/products/${id}`)
-      console.log(response);
-      setProducts(products.filter(({_id}) => _id !== id))
-      if (callback) {
-        callback()
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  const handleEdit = async (id, updateObj, callback) => {
-    try {
-      const response = await axios.put(`http://localhost:5000/api/products/${id}`, updateObj)
-      console.log(response.data);
-      setProducts(products.map(product => {
-        if (product._id === id) {
-          return response.data;
-        } else {
-          return product;
-        }
-      }))
-      if (callback) {
-        callback()
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  const decrementQuantity = async ({productId}) => {
-    try {
-      const product = products.find(product => product._id === productId)
-      console.log(product);
-      let quantity = product.quantity
-      const updateObj = { ...product, quantity: quantity - 1 }
-      await handleEdit(productId, updateObj)
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  const handleAddToCart = async (product, quantity, callback) => {
-    try {
-      if (quantity <= 0) {
-        return
-      }
-      
-      await decrementQuantity(product);
-
-      const response = await axios.post(`http://localhost:5000/api/cart`, product)
-      const data =  response.data
-      const oldCartItem = cart.find(item => item._id === data._id)
-
-      if (oldCartItem) {
-        const newCartItem = {...oldCartItem, quantity: data.quantity}
-        setCart(cart.map(cartItem => cartItem._id === newCartItem._id ? newCartItem : cartItem))
-      } else {
-        setCart([...cart, data])
-      }
-      
-      if (callback) {
-        callback()
-      }
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
-  const handleCheckout = async () => {
-    try {
-      const response = await axios.post(`http://localhost:5000/api/cart/checkout`)
-      console.log(response);
-      setCart([])
-    } catch (e) {
-
-    }
-  }
-
   return (
     <div id="app">
-      <Header cart={cart} onCheckout={handleCheckout}/>
+      <Header />
       <main>
-        <ProductListings onDelete={handleDelete} onEdit={handleEdit} onAddToCart={handleAddToCart}/>
+        <ProductListings />
         <ProductAddForm />
       </main>
     </div>

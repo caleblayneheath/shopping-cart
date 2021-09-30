@@ -19,7 +19,6 @@ const ProductAddForm = () => {
     try {
       const response = await axios.post('http://localhost:5000/api/products', newProduct)
       const data = response.data
-      // setProducts([...products, data])
       dispatch({ 
         type: 'PRODUCT_ADDED',
         data: data
