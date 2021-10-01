@@ -35,53 +35,98 @@ const EditableProduct = (props) => {
     setEditFormVisible(false);
   }
 
-  const decrementQuantity = async (product) => {
+  const decrementQuantity = (product) => {
     try {
       let quantity = props.quantity
       const updateObj = { ...product, quantity: quantity - 1 }
-      await onEdit(props.id, updateObj)
+      // await onEdit(props.id, updateObj)
+      dispatch(onEdit(props.id, updateObj))
     } catch (e) {
       console.log(e);
     }
   }
 
-  const onEdit = async (id, updateObj, callback) => {
-    try {
-      const response = await axios.put(`http://localhost:5000/api/products/${id}`, updateObj)
-      console.log(response.data);
-      dispatch({
-        type: 'PRODUCT_UPDATED',
-        data: response.data
-      })
-      if (callback) {
-        callback()
+  const onEdit = (id, updateObj, callback) => {
+    return async dispatch => {
+      try {
+        const response = await axios.put(`http://localhost:5000/api/products/${id}`, updateObj)
+        console.log(response.data);
+        dispatch({
+          type: 'PRODUCT_UPDATED',
+          data: response.data
+        })
+        if (callback) {
+          callback()
+        }
+      } catch (e) {
+        console.log(e);
       }
-    } catch (e) {
-      console.log(e);
     }
   }
 
-  const onAddToCart = async (product, quantity, callback) => {
-    try {
-      if (quantity <= 0) {
-        return
-      }
+  // const onEdit = async (id, updateObj, callback) => {
+  //   try {
+  //     const response = await axios.put(`http://localhost:5000/api/products/${id}`, updateObj)
+  //     console.log(response.data);
+  //     dispatch({
+  //       type: 'PRODUCT_UPDATED',
+  //       data: response.data
+  //     })
+  //     if (callback) {
+  //       callback()
+  //     }
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // }
+
+  // const onAddToCart = async (product, quantity, callback) => {
+  //   try {
+  //     if (quantity <= 0) {
+  //       return
+  //     }
       
-      await decrementQuantity(product);
+  //     await decrementQuantity(product);
 
-      const response = await axios.post(`http://localhost:5000/api/cart`, product)
-      const data =  response.data
+  //     const response = await axios.post(`http://localhost:5000/api/cart`, product)
+  //     const data =  response.data
 
-      dispatch({
-        type: 'CART_UPDATED',
-        data: data,
-      })
+  //     dispatch({
+  //       type: 'CART_UPDATED',
+  //       data: data,
+  //     })
 
-      if (callback) {
-        callback()
+  //     if (callback) {
+  //       callback()
+  //     }
+  //   } catch (e) {
+  //     console.error(e)
+  //   }
+  // }
+
+  const onAddToCart = (product, quantity, callback) => {
+    return async dispatch => {
+      try {
+        if (quantity <= 0) {
+          return
+        }
+        
+        await decrementQuantity(product);
+
+        const response = await axios.post(`http://localhost:5000/api/cart`, product)
+        const data = response.data
+
+        dispatch({
+          type: 'CART_UPDATED',
+          data: data,
+        })
+
+        if (callback) {
+          callback()
+        }
+      } catch (e) {
+        console.error(e)
       }
-    } catch (e) {
-      console.error(e)
     }
   }
 
@@ -92,7 +137,7 @@ const EditableProduct = (props) => {
       price: props.price,
       productId: props.id
     }
-    onAddToCart(product, props.quantity)
+    dispatch(onAddToCart(product, props.quantity))
   }
 
   return(
