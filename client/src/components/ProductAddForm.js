@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { useDispatch } from 'react-redux'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const ProductAddForm = () => {
   const dispatch = useDispatch()
@@ -12,22 +12,24 @@ const ProductAddForm = () => {
   const handleSubmit = event => {
     console.log('form submitted')
     event.preventDefault();
-    onSubmit({ title, price, quantity }, hideForm)
+    dispatch(addProduct({title, price, quantity}, hideForm))
   }
-  
-  const onSubmit = async (newProduct, callback) => {
-    try {
-      const response = await axios.post('http://localhost:5000/api/products', newProduct)
-      const data = response.data
-      dispatch({ 
-        type: 'PRODUCT_ADDED',
-        data: data
-      })
-      if (callback) {
-        callback()
+ 
+  const addProduct = (newProduct, callback) => {
+    return async dispatch => {
+      try {
+        const response = await axios.post('http://localhost:5000/api/products', newProduct)
+        const data = response.data
+        dispatch({ 
+          type: 'PRODUCT_ADDED',
+          data: data
+        })
+        if (callback) {
+          callback()
+        }
+      } catch (e) {
+        console.log(e);
       }
-    } catch (e) {
-      console.error(e)
     }
   }
 

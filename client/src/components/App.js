@@ -24,37 +24,20 @@ const App = () => {
     }
   }
 
-  // useEffect(() => {
-  //   const getProducts = async () => {
-  //     const response = await axios.get('http://localhost:5000/api/products');
-  //     const data = response.data
-  //     if (data.length > 0) {
-  //       dispatch({
-  //         type: 'PRODUCTS_RECEIVED',
-  //         data: data
-  //       })
-  //     } else {
-  //       console.log('No products on the server')
-  //     }
-  //   }
-  //   getProducts()
-  // }, [])
-
   useEffect(() => {
-    const getCart = async () => {
+    dispatch(initializeCart())
+  }, [dispatch])
+
+  const initializeCart = () => {
+    return async dispatch => {
       const response = await axios.get('http://localhost:5000/api/cart');
       const data = response.data
-      if (data.length > 0) {
-        dispatch({
-          type: 'CART_RECEIVED',
-          data: data
-        })
-      } else {
-        console.log('No products on the server')
-      }
+      dispatch({
+        type: 'CART_RECEIVED',
+        data: data
+      })
     }
-    getCart()
-  }, [])
+  }
 
   return (
     <div id="app">
