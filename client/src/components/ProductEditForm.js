@@ -12,22 +12,25 @@ const ProductEditForm = props => {
   const handleUpdate = event => {
     console.log(`updating product ${title}`);
     event.preventDefault();
-    onEdit(props.id, {title, price, quantity}, props.hideEditForm);
+    dispatch(onEdit(props.id, {title, price, quantity}, props.hideEditForm))
+    //onEdit(props.id, {title, price, quantity}, props.hideEditForm);
   };
 
-  const onEdit = async (id, updateObj, callback) => {
-    try {
-      const response = await axios.put(`http://localhost:5000/api/products/${id}`, updateObj)
-      console.log(response.data);
-      dispatch({
-        type: 'PRODUCT_UPDATED',
-        data: response.data
-      })
-      if (callback) {
-        callback()
+  const onEdit = (id, updateObj, callback) => {
+    return async dispatch => {
+      try {
+        const response = await axios.put(`http://localhost:5000/api/products/${id}`, updateObj)
+        console.log(response.data);
+        dispatch({
+          type: 'PRODUCT_UPDATED',
+          data: response.data
+        })
+        if (callback) {
+          callback()
+        }
+      } catch (e) {
+        console.log(e);
       }
-    } catch (e) {
-      console.log(e);
     }
   }
 
