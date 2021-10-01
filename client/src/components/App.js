@@ -5,24 +5,14 @@ import { useDispatch } from 'react-redux'
 import Header from './Header';
 import ProductAddForm from "./ProductAddForm";
 import ProductListings from "./ProductListings";
+import { createInitialProducts } from '../lib/reducers/productReducer'
 
 const App = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(initializeProducts())
+    dispatch(createInitialProducts())
   }, [dispatch])
-
-  const initializeProducts = () => {
-    return async dispatch => {
-      const response = await axios.get('http://localhost:5000/api/products');
-      const data = response.data
-      dispatch({
-        type: 'PRODUCTS_RECEIVED',
-        data: data
-      })
-    }
-  }
 
   useEffect(() => {
     dispatch(initializeCart())

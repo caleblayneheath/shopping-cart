@@ -1,3 +1,6 @@
+import axios from 'axios'
+import apiService from '../../services/api_service'
+
 const productReducer = ((state = [], action) => {
   switch (action.type) {
     case 'PRODUCTS_RECEIVED': {
@@ -17,5 +20,15 @@ const productReducer = ((state = [], action) => {
     }
   }
 })
+
+export const createInitialProducts = () => {
+  return async dispatch => {
+    const data = await apiService.getAllProducts()
+    dispatch({
+      type: 'PRODUCTS_RECEIVED',
+      data: data
+    })
+  }
+}
 
 export default productReducer
