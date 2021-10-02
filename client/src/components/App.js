@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React, {useEffect} from "react";
 import { useDispatch } from 'react-redux'
 
@@ -6,6 +5,7 @@ import Header from './Header';
 import ProductAddForm from "./ProductAddForm";
 import ProductListings from "./ProductListings";
 import { createInitialProducts } from '../lib/reducers/productReducer'
+import { createInitialCart } from '../lib/reducers/cartReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -15,19 +15,8 @@ const App = () => {
   }, [dispatch])
 
   useEffect(() => {
-    dispatch(initializeCart())
+    dispatch(createInitialCart())
   }, [dispatch])
-
-  const initializeCart = () => {
-    return async dispatch => {
-      const response = await axios.get('http://localhost:5000/api/cart');
-      const data = response.data
-      dispatch({
-        type: 'CART_RECEIVED',
-        data: data
-      })
-    }
-  }
 
   return (
     <div id="app">

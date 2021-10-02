@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import EditableProduct from "./EditableProduct";
 
-const ProductListings = ({ onDelete, onEdit, onAddToCart}) => {
+const ProductListings = () => {
   const products = useSelector(store => store.products)
 
   return(

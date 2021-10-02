@@ -1,6 +1,7 @@
-import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import { useState } from "react";
+
+import { createProductUpdate } from '../lib/reducers/productReducer';
 
 const ProductEditForm = props => {
   const dispatch = useDispatch()
@@ -10,29 +11,9 @@ const ProductEditForm = props => {
   const [ quantity, setQuantity ] = useState(props.quantity)
 
   const handleUpdate = event => {
-    console.log(`updating product ${title}`);
     event.preventDefault();
-    dispatch(onEdit(props.id, {title, price, quantity}, props.hideEditForm))
-    //onEdit(props.id, {title, price, quantity}, props.hideEditForm);
+    dispatch(createProductUpdate(props.id, {title, price, quantity}, props.hideEditForm))
   };
-
-  const onEdit = (id, updateObj, callback) => {
-    return async dispatch => {
-      try {
-        const response = await axios.put(`http://localhost:5000/api/products/${id}`, updateObj)
-        console.log(response.data);
-        dispatch({
-          type: 'PRODUCT_UPDATED',
-          data: response.data
-        })
-        if (callback) {
-          callback()
-        }
-      } catch (e) {
-        console.log(e);
-      }
-    }
-  }
 
   const handleCancel = event => {
     event.preventDefault();

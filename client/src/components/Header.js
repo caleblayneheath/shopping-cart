@@ -1,28 +1,14 @@
 import { useSelector, useDispatch } from 'react-redux'
-import axios from 'axios'
+import { createCheckout } from '../lib/reducers/cartReducer'
 
-const Header = (props) => {
+const Header = () => {
+  const dispatch = useDispatch();
+  const cart = useSelector(store => store.cart)
+  
   const onCheckout = () => {
     dispatch(createCheckout())    
   }
-
-  const createCheckout = () => {
-    return async dispatch => {
-      try {
-        const response = await axios.post(`http://localhost:5000/api/cart/checkout`)
-        console.log(response);
-        dispatch({
-          type: 'CART_CHECKED_OUT',
-        }) 
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  }
   
-  const dispatch = useDispatch();
-  const cart = useSelector(store => store.cart)
-  console.log(cart)
   const getTotalPrice = () => {
     return cart.reduce((total, cartItem) => {
       return total + (cartItem.price * cartItem.quantity)
